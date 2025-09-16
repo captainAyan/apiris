@@ -1,0 +1,80 @@
+import type { FolderNode, AuthConfig, KeyValue, Project } from "../src/types";
+
+export const variables: KeyValue[] = [{ key: "a", value: "b", enabled: false }];
+export const auth: AuthConfig = { type: "bearer", token: "jwttoken" };
+export const rootFolder: FolderNode = {
+  id: "123",
+  name: "test",
+  type: "folder",
+  auth: { type: "inherit" },
+  children: [
+    {
+      id: "1",
+      name: "home",
+      type: "request",
+      method: "GET",
+      url: "https://echo.hoppscotch.io",
+      headers: [],
+      queryParams: [],
+      auth: { type: "inherit" },
+    },
+    {
+      id: "2",
+      name: "opsts",
+      type: "request",
+      method: "POST",
+      url: "https://echo.hoppscotch.io",
+      headers: [],
+      queryParams: [],
+      auth: { type: "inherit" },
+    },
+    {
+      id: "3",
+      name: "lasdjflsj",
+      type: "request",
+      method: "PUT",
+      url: "https://echo.hoppscotch.io",
+      headers: [],
+      queryParams: [],
+      auth: { type: "inherit" },
+    },
+    {
+      id: "4",
+      name: "hopp",
+      type: "request",
+      method: "PUT",
+      url: "https://echo.hoppscotch.io",
+      headers: [],
+      queryParams: [],
+      auth: { type: "inherit" },
+    },
+    {
+      id: "5",
+      name: "github",
+      type: "request",
+      method: "PUT",
+      url: "https://echo.hoppscotch.io",
+      headers: [],
+      queryParams: [],
+      auth: { type: "inherit" },
+    },
+    {
+      id: "6",
+      name: "tes test test",
+      type: "request",
+      method: "PUT",
+      url: "https://echo.hoppscotch.io",
+      headers: [],
+      queryParams: [],
+      auth: { type: "inherit" },
+    },
+  ],
+};
+export const project: Project = {
+  id: "1",
+  name: "test",
+  description: "test project",
+  variables: variables,
+  auth: auth,
+  rootFolder: rootFolder,
+};
