@@ -7,26 +7,30 @@ export type Project = {
 
   auth: AuthConfig;
 
-  rootFolder: FolderNode;
+  rootFolder: Folder;
   // history: RequestHistoryEntry[];
 
   createdAt?: string;
   updatedAt?: string;
 };
 
-export type FolderNode = {
+export type Folder = {
   id: string;
   name: string;
   type: "folder";
   auth: AuthConfig;
 
-  children?: Array<FolderNode | RequestNode>;
+  children?: Array<Folder | Request>;
 
   createdAt?: string;
   updatedAt?: string;
+
+  extra: {
+    isOpen: boolean;
+  };
 };
 
-export type RequestNode = {
+export type Request = {
   id: string;
   name: string;
   type: "request";
@@ -40,7 +44,7 @@ export type RequestNode = {
 
   auth: AuthConfig;
 
-  // examples: SavedExample[];
+  examples?: Example[];
 
   createdAt?: string;
   updatedAt?: string;
@@ -66,7 +70,7 @@ export type RequestBody =
     }
   | { type: "form-urlencoded"; fields: KeyValue[] };
 
-export type SavedExample = {
+export type Example = {
   id: string;
   name: string;
 

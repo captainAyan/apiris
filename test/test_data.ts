@@ -1,12 +1,15 @@
-import type { FolderNode, AuthConfig, KeyValue, Project } from "../src/types";
+import type { Folder, AuthConfig, KeyValue, Project } from "../src/types";
 
 export const variables: KeyValue[] = [{ key: "a", value: "b", enabled: false }];
 export const auth: AuthConfig = { type: "bearer", token: "jwttoken" };
-export const rootFolder: FolderNode = {
+export const rootFolder: Folder = {
   id: "123",
   name: "test",
   type: "folder",
   auth: { type: "inherit" },
+  extra: {
+    isOpen: false,
+  },
   children: [
     {
       id: "1",
@@ -67,6 +70,108 @@ export const rootFolder: FolderNode = {
       headers: [],
       queryParams: [],
       auth: { type: "inherit" },
+    },
+    {
+      id: "root-folder",
+      name: "API Tests",
+      type: "folder",
+      auth: { type: "no auth" },
+      extra: {
+        isOpen: false,
+      },
+      createdAt: "2025-09-18T12:00:00Z",
+      updatedAt: "2025-09-19T10:00:00Z",
+      children: [
+        {
+          id: "folder-1",
+          name: "User APIs",
+          type: "folder",
+          auth: { type: "bearer", token: "user-token" },
+          createdAt: "2025-09-18T12:30:00Z",
+          extra: {
+            isOpen: false,
+          },
+          children: [
+            {
+              id: "request-1",
+              name: "Get All Users",
+              type: "request",
+              method: "GET",
+              url: "https://api.example.com/users",
+              headers: [],
+              queryParams: [],
+              body: undefined,
+              auth: { type: "bearer", token: "user-token" },
+              createdAt: "2025-09-18T13:00:00Z",
+            },
+            {
+              id: "request-2",
+              name: "Create User",
+              type: "request",
+              method: "POST",
+              url: "https://api.example.com/users/create",
+              headers: [],
+              queryParams: [],
+              auth: { type: "bearer", token: "user-token" },
+            },
+          ],
+        },
+        {
+          id: "folder-2",
+          name: "Admin APIs",
+          type: "folder",
+          auth: { type: "basic", username: "admin", password: "admin123" },
+          extra: {
+            isOpen: false,
+          },
+          children: [
+            {
+              id: "request-3",
+              name: "Delete User",
+              type: "request",
+              method: "DELETE",
+              url: "https://api.example.com/users/delete?id=42",
+              headers: [],
+              queryParams: [],
+              body: undefined,
+              auth: { type: "basic", username: "admin", password: "admin123" },
+            },
+          ],
+        },
+        {
+          id: "request-4",
+          name: "Ping Server",
+          type: "request",
+          method: "GET",
+          url: "https://api.example.com/ping",
+          headers: [],
+          queryParams: [],
+          body: undefined,
+          auth: { type: "no auth" },
+        },
+        {
+          id: "folder-3",
+          name: "Misc",
+          type: "folder",
+          auth: { type: "no auth" },
+          extra: {
+            isOpen: false,
+          },
+          children: [
+            {
+              id: "request-5",
+              name: "Broken Request",
+              type: "request",
+              method: "GET",
+              url: "htp:/invalid-url",
+              headers: [],
+              queryParams: [{ key: "q", value: "test", enabled: true }],
+              body: undefined,
+              auth: { type: "no auth" },
+            },
+          ],
+        },
+      ],
     },
   ],
 };

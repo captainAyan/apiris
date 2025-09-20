@@ -1,23 +1,70 @@
-import type React from "react";
+// import type { Folder, Request } from "../../types";
 
-import type { FolderNode, RequestNode } from "../../types";
+// export type FolderTabNode = {
+//   id: string;
+//   isDirty: false;
+//   type: "folder";
+//   data: Folder;
+// };
+
+// export type RequestTabNode = {
+//   id: string;
+//   isDirty: false;
+//   type: "request";
+//   data: Request;
+// };
+
+// export type TabNode = FolderTabNode | RequestTabNode;
+
+export type TabNode = {
+  id: string;
+  name: string;
+  isDirty: boolean;
+  // data: Request | Folder;
+};
 
 interface TabListProps {
-  addNewTab: () => void;
+  onAddTab: (tab: TabNode) => void;
+  tabs: TabNode[];
+  onCloseTab: (tabId: string) => void;
+  onChangeTab: (tabId: string) => void;
+  activeTabId?: string;
 }
 
 export function TabList({
-  children,
-  addNewTab,
-}: React.PropsWithChildren<TabListProps>) {
+  tabs,
+  onAddTab,
+  onCloseTab,
+  onChangeTab,
+  activeTabId,
+}: TabListProps) {
+  const addNewTab = () => {
+    // const newTab = {
+    //   id: "new_empty_tab_" + Date.now(),
+    //   name: "New Tab",
+    //   type: "request",
+    // } as TabNode;
+
+    // onAddTab(newTab);
+    console.log("add new tab");
+  };
+
   return (
-    <div className="flex items-center bg-white border-b border-gray-300">
-      {children}
+    <div className="flex items-center overflow-x-scroll bg-white border-b border-gray-300">
+      {tabs.map((tabNode) => (
+        <Tab
+          tabNode={tabNode}
+          key={tabNode.id}
+          isActive={tabNode.id === activeTabId}
+          onChangeTab={onChangeTab}
+          onCloseTab={onCloseTab}
+        />
+      ))}
 
       {/* Add tab button */}
       <button
         onClick={addNewTab}
-        className="m-2 px-3 py-1 rounded hover:bg-gray-200 text-gray-600"
+        className="p-4 hover:bg-gray-200 text-gray-600"
       >
         +
       </button>
@@ -26,13 +73,13 @@ export function TabList({
 }
 
 interface TabProps {
-  tabNode: FolderNode | RequestNode;
+  tabNode: TabNode;
   isActive: boolean;
   onChangeTab: (tabId: string) => void;
   onCloseTab: (tabId: string) => void;
 }
 
-export function Tab({ tabNode, isActive, onChangeTab, onCloseTab }: TabProps) {
+function Tab({ tabNode, isActive, onChangeTab, onCloseTab }: TabProps) {
   return (
     <div
       className={`flex items-center space-x-2 p-4 cursor-pointer ${

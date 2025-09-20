@@ -1,58 +1,71 @@
 import { useState } from "react";
 
-import type { FolderNode, RequestNode } from "../../types";
-import RequestSidebar from "./RequestSidebars";
-import { TabList, Tab } from "./TabLayout";
+import type { Folder, Request } from "../../types";
+import type { TabNode } from "./TabLayout";
+import RequestTree from "./RequestTree";
+import { TabList } from "./TabLayout";
 
 import { project } from "../../../test/test_data";
-
-export type TabNode = FolderNode | RequestNode;
 
 export default function Home() {
   const [tabs, setTabs] = useState<TabNode[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>();
 
   const openRequestTab = (requestId: string) => {
-    const request: FolderNode | RequestNode | null = findNodeById(
+    const node: Folder | Request | null = findNodeById(
       requestId,
       project.rootFolder
     );
 
-    if (!request) return;
+    if (!node) return;
 
-    /// check if this request is already open as a tab
-    if (tabs.find((tab) => tab.id === request.id)) {
+    if (tabs.find((tab) => tab.id === node.id)) {
       setActiveTabId(requestId);
       return;
     }
 
-    /// create tab with this request
-    setTabs([...tabs, request]);
-    setActiveTabId(request.id);
+    const newTab: TabNode = {
+      id: node.id,
+      name: node.name,
+      isDirty: false,
+    };
+
+    setTabs([...tabs, newTab]);
+    setActiveTabId(node.id);
   };
 
   const changeTab = (tabId: string) => {
     setActiveTabId(tabId);
   };
+
   const closeTab = (tabId: string) => {
-    if (tabId === activeTabId) setActiveTabId(tabs[0].id);
+    const closedTabIndex = tabs.findIndex((tab) => tab.id === tabId);
+    if (closedTabIndex === -1) return;
+
+    let newActiveTabId = activeTabId;
+    if (tabId === activeTabId) {
+      const newTabs = tabs.filter((tab) => tab.id !== tabId);
+      if (newTabs.length > 0) {
+        newActiveTabId =
+          newTabs[closedTabIndex > 0 ? closedTabIndex - 1 : 0].id;
+      } else {
+        newActiveTabId = undefined;
+      }
+    }
 
     setTabs(tabs.filter((request) => request.id !== tabId));
-  };
-
-  const addNewTab = () => {
-    console.log("add empty request tab");
+    setActiveTabId(newActiveTabId);
   };
 
   const findNodeById = (
     id: string,
-    node: FolderNode | RequestNode
-  ): FolderNode | RequestNode | null => {
+    node: Folder | Request
+  ): Folder | Request | null => {
     if (node.id === id) return node;
 
     if (node.type == "folder" && node.children) {
       for (const child of node.children) {
-        const result: FolderNode | RequestNode | null = findNodeById(id, child);
+        const result: Folder | Request | null = findNodeById(id, child);
         if (result) return result;
       }
     }
@@ -63,25 +76,23 @@ export default function Home() {
   return (
     <div className="flex h-full">
       <div className="flex-1">
-        <RequestSidebar
-          folderTree={project.rootFolder}
+        <RequestTree
+          rootFolder={project.rootFolder}
           onFolderSelected={console.log}
           onRequestSelected={openRequestTab}
         />
       </div>
       <div className="flex-9">
-        <TabList addNewTab={addNewTab}>
-          {tabs.map((tab) => (
-            <Tab
-              tabNode={tab}
-              key={tab.id}
-              isActive={tab.id === activeTabId}
-              onChangeTab={changeTab}
-              onCloseTab={closeTab}
-            />
-          ))}
-        </TabList>
-
+        <TabList
+          tabs={tabs}
+          activeTabId={activeTabId}
+          onAddTab={(newTab) => {
+            setTabs([...tabs, newTab]);
+            setActiveTabId(newTab.id);
+          }}
+          onChangeTab={changeTab}
+          onCloseTab={closeTab}
+        />
         <div className="flex-1 p-4 overflow-auto bg-gray-50">
           <div className="border border-dashed border-gray-400 rounded p-4 h-full">
             <h2 className="text-lg font-semibold text-gray-700">Content</h2>
