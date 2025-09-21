@@ -8,7 +8,7 @@ export const rootFolder: Folder = {
   type: "folder",
   auth: { type: "inherit" },
   extra: {
-    isOpen: false,
+    isOpen: true,
   },
   children: [
     {

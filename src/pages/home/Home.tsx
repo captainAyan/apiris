@@ -1,15 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import type { Folder, Request } from "../../types";
+import type { Folder, Project, Request } from "../../types";
 import type { TabNode } from "./TabLayout";
 import RequestTree from "./RequestTree";
 import { TabList } from "./TabLayout";
 
-import { project } from "../../../test/test_data";
+import { project as projectData } from "../../../test/test_data";
+import {
+  getFromLocalStorage,
+  saveToLocalStorage,
+} from "../../localStorageUtil";
 
 export default function Home() {
   const [tabs, setTabs] = useState<TabNode[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>();
+
+  const [project, setProject] = useState<Project>(
+    // projectData
+    getFromLocalStorage("test-project")
+  );
+
+  useEffect(() => {
+    saveToLocalStorage("test-project", project);
+  }, [project]);
+
+  const setRootFolder = (updatedRootFolder: Folder) => {
+    const updatedProject = {
+      ...project,
+      rootFolder: updatedRootFolder,
+    };
+    setProject(updatedProject);
+  };
 
   const openRequestTab = (requestId: string) => {
     const node: Folder | Request | null = findNodeById(
@@ -78,6 +99,7 @@ export default function Home() {
       <div className="flex-1">
         <RequestTree
           rootFolder={project.rootFolder}
+          setRootFolder={setRootFolder}
           onFolderSelected={console.log}
           onRequestSelected={openRequestTab}
         />

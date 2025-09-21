@@ -1,14 +1,8 @@
-import { useState } from "react";
-
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/home/Home";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const [tabs, setTabs] = useState([]);
-
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden">
       <div className="flex flex-1 overflow-hidden">
